@@ -1,0 +1,7 @@
+#https://www.sitepoint.com/forms-file-uploads-security-node-express/
+#https://github.com/sitepoint-editors/node-forms
+#https://stackoverflow.com/questions/32252020/socket-io-send-form-data-from-client-to-serve
+#https://www.programwitherik.com/getting-started-with-socket-io-node-js-and-express
+#https://hackernoon.com/enforcing-a-single-web-socket-connection-per-user-with-node-js-socket-io-and-redis-65f9eb57f66a
+#https://medium.com/today-i-learned-chai/building-a-simple-chat-application-with-node-js-and-socket-io-a7d7b38fd02
+#https://stackoverflow.com/questions/9689109/how-to-display-javascript-variables-in-a-html-page-without-document-write8

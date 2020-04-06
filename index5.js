@@ -3,6 +3,8 @@ const app = express();
 const port = 3000;
 
 
+
+
 // Body Parser is ExpressJS middleware that allows
 // us to parse data from incoming requests. 
 var bodyParser = require('body-parser');
@@ -121,16 +123,42 @@ icanhazip.IPv4().then(function(myIP) {
 
 
 //start the server
-var server = app.listen(3000, () => {
+var server = require('http').createServer(app);
+//Client setting temperature variable 
+var io = require('socket.io')(server); //Bind socket.io to our express server.
+
+
+var server = app.listen(3000, () => {})
+
+
+app.use('/realtime', express.static('displayrealtime.html')); //Send index.html page on GET /
+
+//app.use('/setTemp', express.static('setTemp.html'));
+app.use(express.static(__dirname + '/node_module'));
+
+
+app.get('/setTemp', function(req, res,next) {
+    res.sendFile(__dirname + '/setTemp.html');
+});
+
+io.on('connection', function(client) {
+	client.on('set', function(data) {
+                console.log(data);
+        });
+});
+
+//server.listen(3000)
+
+//handleing non existant pages and when something messes up
+//https://github.com/sitepoint-editors/node-forms
+app.use((req, res, next) => {
+  res.status(404).send("Sorry can't find that!")
 })
 
-
-//real time data stuff... sockets and what not
-var io = require('socket.io')(server); //Bind socket.io to our express server.
-app.use('/realtime', express.static('displayrealtime.html')); //Send index.html page on GET /
-io.on('connection', (socket) => {
-	console.log('user viewing realtime')
-}); 
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
+})
 
 
 

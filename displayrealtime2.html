@@ -13,8 +13,11 @@
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-        <script>
-            var socket = io.connect('http://18.222.183.26:3000'); //connect to server
+        <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+
+	<script>
+            var socket = io.connect('http://18.191.255.9:3000'); //connect to server
 
             var ctx = document.getElementById('myChart').getContext('2d');
             var chart = new Chart(ctx, {
@@ -61,7 +64,48 @@
                 }
                 chart.update(); //Update the graph.
             });
+	   
+
+	$(document).ready(function(){
+	
+
+		//var socket = io();
+                $('#form').submit(function(){
+                        socket.emit('message',  $('#Input').val());
+			//socket.emit('message', $('#Input').val());
+                        //socket.emit('message', "Input");
+                        //$('#Input').val('');
+                        return false;
+                });
+	    });
+
         </script>
+        
+	<!--
+	//https://stackoverflow.com/questions/32252020/socket-io-send-form-data-from-client-to-server
+	//sending message to server
+	
+	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<script>
+		var socket = io();
+		$('#form').submit(function(){
+        		socket.emit('message', $('#Input').val());
+        		//socket.emit('message', "Input");
+        		//$('#Input').val('');
+        		return false;
+      		});
+    	</script>
+	-->
+
+	<!--
+    	<form id = "form" action = "">
+      		Input: <input type="number" id="Input"><br>
+      		<input type="submit" value="Set">
+    	</form>
+	-->
+
+
     </body>
     <style>
         h1 {
