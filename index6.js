@@ -41,6 +41,8 @@ app.get('/setTemp', function(req, res,next) {
 //this page shows real time data of the last 15 data received
 app.use('/realtime', express.static('displayrealtime.html'));
 
+app.use('/allInOne', express.static('allInOne.html'));
+
 
 //handles how client enteracts with server, what info it sents
 io.on('connection', function(client) {
@@ -125,7 +127,6 @@ app.get('/api/params', (req, res) => {
         let data = tempdes;
         res.send(data);
 });
-
 
 
 
