@@ -7,7 +7,7 @@ var io = require('socket.io')(server);
 
 
 // Body Parser is ExpressJS middleware that allows
-// us to parse data from incoming requests. 
+// us to parse data from incoming requests.
 var bodyParser = require('body-parser');
 
 //app settings?
@@ -22,29 +22,33 @@ app.get('/', (req, res) =>{
 
 //create placeholder global variables
 var temp = 0;
+var hum = 0;
 
 //load desired setpoints
-var tempdes = {'TempDes':76} //evantually going to load this info from the client
+var paramDes = {'tempDes': 70,
+		'humDes': 70} //formerly tempdesevantually going to load this info from the client
 
 //Page For checking what the temperature is set to
-app.get('/desTemp', (req, res)=>{
-        res.send('temp set to: '+JSON.stringify(tempdes['TempDes'])+' degrees'); 
+app.get('/desParams', (req, res)=>{
+        res.send('Temperature set to: '+JSON.stringify(paramDes['tempDes'])+' degrees' +'<br/>' +
+		 'Humidity set to: '+JSON.stringify(paramDes['humDes'])+' percent' +'<br/>');
 });
 
 
 //Page for Setting the temperature
-app.get('/setTemp', function(req, res,next) {
-    res.sendFile(__dirname + '/setTemp.html');
+app.get('/setParams', function(req, res,next) {
+    res.sendFile(__dirname + '/setParams1.html');
 });
 
 
 //this page shows real time data of the last 15 data received
-app.use('/realtime', express.static('displayrealtime.html'));
+app.use('/realtime', express.static('displayrealtime3.html'));
 
+
+//dashboard that brings it all together. May replace with react later
 app.use('/allInOne', express.static('allInOne.html'));
 
-
-//handles how client enteracts with server, what info it sents
+//handles how client enteracts with server, what info it sents (listens for an event from the client)
 io.on('connection', function(client) {
 
     console.log('client did something');
@@ -52,7 +56,13 @@ io.on('connection', function(client) {
     client.on('messages1', function(data) {
 	    console.log(data); //prints users input to server log
 	    data = parseInt(data); //string to intiger
-	    tempdes = {'TempDes':data}; //updates desired temperature
+	    paramDes['tempDes'] = data; //updates desired temperature
+    });
+
+    client.on('messages2', function(data) {
+            console.log(data); //prints users input to server log
+            data = parseInt(data); //string to intiger
+            paramDes['humDes'] = data; //updates desired temperature
     });
 
 });
@@ -79,12 +89,12 @@ var visData = [];
 app.post('/api/heartbeat', (req, res) => {
         let data = req.body;
         console.log(data);
-        temp = JSON.stringify(data);
+        temp = JSON.stringify(data['heat']);
         res.send(temp);
 
         //add data for csv
         visData.push({temperature: data['heat'],
-                        idealTemp: tempdes['TempDes']});
+                        idealTemp: paramDes['tempDes']});
 
 
         //real time data
@@ -124,7 +134,7 @@ app.get('/chart', (req, res) => {
 
 // This is the route to send the setpoints to the unit.
 app.get('/api/params', (req, res) => {
-        let data = tempdes;
+        let data = paramDes;
         res.send(data);
 });
 
@@ -136,7 +146,7 @@ app.get('/api/params', (req, res) => {
 
 //AJS93 -- added functionality to automatically tell when 
 //install: npm install canihazip
-//Prints info to 
+//Prints info to the console
 var icanhazip = require('icanhazip');
 icanhazip.IPv4().then(function(myIP) {
         console.log('------------------')
@@ -169,6 +179,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack)
   res.status(500).send('Something broke!')
 })
+
 
 
 

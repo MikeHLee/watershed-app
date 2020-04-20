@@ -23,13 +23,13 @@
 </html>
 
 <script>
-	//var socket = io.connect('http://18.191.255.9:3000');
-	var socket = io();
+	var socket = io.connect('http://184.72.68.192:3000');
+	//var socket = io();
 	
 	$('form').submit(function(e){
 		e.preventDefault();
 		var message = $('#chat_input').val();
-		socket.emit('messages', message);
+		socket.emit('messages1', message);
 		return false;
 	});
 	

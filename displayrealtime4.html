@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Temperature Plot</title>
+        <title>Real-Time Sensor Plot</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <h1>Temperature Graph</h1>
+        <h1>Real-Time Sensor Feed</h1>
         <h4>Date: <span id="date"></span></h4>
         <div class="chart-container" style="position: relative; width:75vw; margin: auto;">
             <canvas id="myChart"></canvas>
@@ -24,63 +24,81 @@
                 // The data for our dataset
                 data: {
                 labels: [],
-                datasets: 
-
-		[{
-                    label: "Temperature",
-                    borderColor: "#FF5733",
-                    data: [],
-                    fill: false,
-                    pointStyle: 'circle',
-                    backgroundColor: 'rgba(153,255,51,0.6)',
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    lineTension: 0,
-                }]
-
-
+                datasets:[
+			{label: "Temperature",
+                    	 borderColor: "#FF0000",
+                    	 data: [],
+                    	 fill: false,
+                    	 pointStyle: 'circle',
+                    	 backgroundColor: '#FF7F7F',
+                    	 pointRadius: 5,
+                    	 pointHoverRadius: 7,
+                    	 lineTension: 0},
+			
+			{label: "Humidity",
+                 	 borderColor: "#0000FF",
+                    	 data: [],
+                    	 fill: false,
+                    	 pointStyle: 'circle',
+                    	 backgroundColor: '#6b9cff',
+                    	 pointRadius: 5,
+                    	 pointHoverRadius: 7,
+                    	 lineTension: 0}]
                 },
 
                 // Configuration options go here
-                options: {}
+                options: {
+        		layout: {
+            			padding: {
+                			left: 50,
+                			right: 0,
+                			top: 0,
+                			bottom: 0
+            			}
+			},
+
+			legend: {
+				labels:{
+					padding:75
+				}
+			}
+		}
                 
             });
 
-            socket.on('temp', function(data) { //As a temp data is received 
-                console.log(data.temp);
+	    socket.on('sensorData', function(data) { //As sensor data is received
+                console.log(data);
                 document.getElementById('date').innerHTML = data.date; //update the date
                 if(chart.data.labels.length != 15) { //If we have less than 15 data points in the graph
-                    chart.data.labels.push(data.time);  //Add time in x-asix
-                    chart.data.datasets.forEach((dataset) => {
-                        dataset.data.push(data.temp); //Add temp in y-axis
-                    });
+                    chart.data.labels.push(data.time);  //Add time in x-axis
+                    chart.data.datasets[0].data.push(data.temp); //Add temp in y-axis
+		    chart.data.datasets[1].data.push(data.hum); //Add hum in y-axis
                 }
                 else { //If there are already 15 data points in the graph.
                     chart.data.labels.shift(); //Remove first time data
                     chart.data.labels.push(data.time); //Insert latest time data
-                    chart.data.datasets.forEach((dataset) => {
-                        dataset.data.shift(); //Remove first temp data
-                        dataset.data.push(data.temp); //Insert latest temp data
-                    });
-                }
+                    chart.data.datasets[0].data.shift(); //Remove first temp data
+                    chart.data.datasets[0].data.push(data.temp); //Insert latest temp data
+		    chart.data.datasets[1].data.shift(); //Remove first temp data
+                    chart.data.datasets[1].data.push(data.hum); //Insert latest temp data
+                };
+
                 chart.update(); //Update the graph.
             });
+
         </script>
     </body>
     <style>
         h1 {
             text-align: center;
-            font-family: 'Lato', sans-serif;
         }
 
         h4 {
             text-align: center;
-            font-family: 'Lato', sans-serif;
         }
 
         p {
             text-align: center;
-            font-family: 'Lato', sans-serif;
         }
     </style>
 </html>
