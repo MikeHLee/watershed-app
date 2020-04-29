@@ -4,6 +4,8 @@ const port = 3000
 const bodyParser = require('body-parser');
 const fs = require('fs');
 
+var server = require('http').createServer(app);
+
 // parse application/x-www-form-urlencoded
 //app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -40,5 +42,14 @@ const uploadImage = async (req, res, next) => {
 app.post('/upload/image', uploadImage)
 
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+// convert lastest data to json -> csv -> html-line chart for display
+var path = require('path');
+app.get('/image', (req, res) => {
 
+        //see image
+        res.sendFile(path.join(__dirname +'/images/pic.jpg'));
+
+});
+
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
