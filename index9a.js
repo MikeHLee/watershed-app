@@ -9,9 +9,6 @@ var io = require('socket.io')(server);
 // us to parse data from incoming requests.
 var bodyParser = require('body-parser');
 
-//filesystem allows us to look at files on the server
-var fs = require('fs');
-
 //app settings?
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/node_modules'));
@@ -30,29 +27,29 @@ var sensorData = {'temp': 0,
 //default desired setpoints
 var paramDes = {'tempDes': 70,
 		'humDes': 70,
-		'lightMode': "off",
+		'lightMode':  "off",
 		'timeOn': 0,
 		'timeOff': 0} //formerly tempdesevantually going to load this info from the client
 
 //Page For checking what the temperature is set to
 app.get('/desParams', (req, res)=>{
         res.send('STATUS:' + '<br/>' +
-                 'Temperature set to: '+JSON.stringify(paramDes['tempDes'])+' degrees' +'<br/>' +
-                 'Humidity set to: '+JSON.stringify(paramDes['humDes'])+' percent' +'<br/>' +
-                 'Light Mode set to: '+JSON.stringify(paramDes['lightMode']) +'<br/>' +
-                 'If on, lights activate at: '+JSON.stringify(paramDes['timeOn'])+':00 hours' +'<br/>' +
-                 'If on, light deactivate at : '+JSON.stringify(paramDes['timeOff'])+':00 hours' +'<br/>');
+		 'Temperature set to: '+JSON.stringify(paramDes['tempDes'])+' degrees' +'<br/>' +
+		 'Humidity set to: '+JSON.stringify(paramDes['humDes'])+' percent' +'<br/>' +
+		 'Light Mode set to: '+JSON.stringify(paramDes['lightMode']) +'<br/>' +
+		 'If on, lights activate at: '+JSON.stringify(paramDes['timeOn'])+':00 hours' +'<br/>' +
+		 'If on, light deactivate at : '+JSON.stringify(paramDes['timeOff'])+':00 hours' +'<br/>');
 });
 
 
-//Page for Setting the desired variables
+//Page for Setting the temperature
 app.get('/setParams', function(req, res,next) {
-    res.sendFile(__dirname + '/setParams2.html');
+    res.sendFile(__dirname + '/setParams1.html');
 });
 
 
 //this page shows real time data of the last 15 data received
-app.use('/realtime', express.static('displayrealtime5.html'));
+app.use('/realtime', express.static('displayrealtime4.html'));
 
 
 //dashboard that brings it all together. May replace with react later
@@ -75,24 +72,6 @@ io.on('connection', function(client) {
             paramDes['humDes'] = data; //updates desired temperature
     });
 
-    client.on('messages3', function(data) {
-            console.log(data); //prints users input to server log
-            //data = parseInt(data); //no need to convert to integer here!
-            paramDes['lightMode'] = data; //updates desired temperature
-    });
-
-    client.on('messages4', function(data) {
-            console.log(data); //prints users input to server log
-            data = parseInt(data); //string to intiger
-            paramDes['timeOn'] = data; //updates desired temperature
-    });
-
-    client.on('messages5', function(data) {
-            console.log(data); //prints users input to server log
-            data = parseInt(data); //string to intiger
-            paramDes['timeOff'] = data; //updates desired temperature
-    });
-
 });
 
 
@@ -107,11 +86,10 @@ const csvWriter = createCsvWriter({
   path: 'data4.csv',
   header: [
           {id: 'Temperature', title: 'Temp'},
-          {id: 'idealTemp', title: 'IdealTemp'},
+          {id: 'idealTemp'  , title: 'IdealTemp'},
 	  {id: 'Humidity', title: 'Hum'},
-          {id: 'idealHum', title: 'IdealHum'},
-	  {id: 'Lux', title: "Lux"}
-  	  ]
+          {id: 'idealHum'  , title: 'IdealHum'}
+  ]
 });
 
 
@@ -122,7 +100,6 @@ app.post('/api/heartbeat', (req, res) => {
         let data = req.body;
         sensorData['temp'] = data['temp'];
 	sensorData['hum'] = data['hum'];
-	sensorData['lux'] = data['lux'];
         console.log(sensorData);
 	res.send(sensorData);
 
@@ -130,44 +107,36 @@ app.post('/api/heartbeat', (req, res) => {
         visData.push({	Temperature: sensorData['temp'],
                       	idealTemp: paramDes['tempDes'],
 			Humidity: sensorData['hum'],
-                        idealHum: paramDes['humDes'],
-			Lux: sensorData['lux']}
-			);
-
-	//add data to csv
-        csvWriter
-                .writeRecords(visData)
-                .then(()=> console.log('The CSV file was written successfully'));
-
-	//clear visData
-        visData=[];
+                        idealHum: paramDes['humDes']}
+);
 
         //real time data
         var today = new Date();
 
-	//emit websockets event for realtime graph
+	//emit websockets event
 	io.sockets.emit('sensorData',
 
 			{date: (today.getDate()-1)+"-"+(today.getMonth()+1)+"-"+today.getFullYear(),
 			time: (today.getHours())+":"+(today.getMinutes()),
 			temp: sensorData['temp'],
- 			hum: sensorData['hum'],
-			lux: sensorData['lux']}
+ 			hum: sensorData['hum']}
+
 			);
-
-	var record = fs.readFileSync('data4.csv','utf8')
-
-	console.log(record);
-
-	//emit websockets event for cumulative graph
-	io.sockets.emit('cumulativeData', {cumulative: record});
 });
 
 
 // convert lastest data to json -> csv -> html-line chart for display
 var path = require('path');
 app.get('/chart', (req, res) => {
-        console.log('user viewing chart');
+        //add data to csv
+        csvWriter
+                .writeRecords(visData)
+                .then(()=> console.log('The CSV file was written successfully'));
+
+        console.log('user viewing chart')
+        //clear visData
+        visData=[];
+
         //convert csv to html
         //https://www.npmjs.com/package/chart-csv
         //using shell commands

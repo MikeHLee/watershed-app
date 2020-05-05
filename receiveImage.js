@@ -18,8 +18,8 @@ const uploadImage = async (req, res, next) => {
     try {
 
         // to declare some path to store your converted image
-        const path = './images/'+Date.now()+'.png';
-        //const path = './images/pic.jpg';
+        //const path = './images/'+Date.now()+'.png';
+        const path = './images/pic.jpg';
 
         let imageString = req.body['image'];
 

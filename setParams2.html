@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	</head>
+    <body>
+	<h1> Control Panel </h1>
+        
+	<b>Update Temperature</b>
+
+        <form id="form" id="chat_form">
+            <input id="chat_input_temp" type="number" value="0">
+        </form>
+
+	</br>
+	
+	<b>Update Humidity</b>
+
+        <form id="form" id="chat_form">
+            <input id="chat_input_hum" type="number" value="0">	
+	</form>
+
+	</br>
+
+	<b>Update Light Mode</b>
+
+	<form id="form" id="chat_form">
+            <input id="chat_input_lightMode" type="text" value="off">
+        </form>
+	
+	</br>
+
+	<b>Update Time On If Light On</b>
+
+        <form id="form" id="chat_form">
+            <input id="chat_input_timeOn" type="number" value="0">
+        </form>
+
+	</br>
+
+	<b>Update Time On If Light Off</b>
+
+        <form id="form" id="chat_form">
+            <input id="chat_input_timeOff" type="number" value="0">
+	    </br>
+            </br>
+            <input type="submit" value="Set Climate">
+        </form>
+
+	<!--
+	<form id="form" id="chat_form">
+            <input id="chat_input" type="text">
+            <input type="submit" value="Set">
+        </form>
+	-->
+
+         <script src="/jquery/dist/jquery.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+    </body>
+</html>
+
+<script>
+	var socket = io.connect('http://54.172.134.78:3000');
+	//var socket = io();
+
+	$('form').submit(function(e){
+		e.preventDefault();
+		var message = $('#chat_input_temp').val();
+		socket.emit('messages1', message);
+		return false;
+	});
+
+	$('form').submit(function(e){
+                e.preventDefault();
+                var message = $('#chat_input_hum').val();
+                socket.emit('messages2', message);
+                return false;
+        });
+
+	$('form').submit(function(e){
+                e.preventDefault();
+                var message = $('#chat_input_lightMode').val();
+                socket.emit('messages3', message);
+		console.log(message);
+                return false;
+        });
+
+	$('form').submit(function(e){
+                e.preventDefault();
+                var message = $('#chat_input_timeOn').val();
+                socket.emit('messages4', message);
+                return false;
+        });
+
+	$('form').submit(function(e){
+                e.preventDefault();
+                var message = $('#chat_input_timeOff').val();
+                socket.emit('messages5', message);
+                return false;
+        });
+
+</script>
