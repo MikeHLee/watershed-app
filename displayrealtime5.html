@@ -43,17 +43,7 @@
                     	 backgroundColor: '#6b9cff',
                     	 pointRadius: 5,
                     	 pointHoverRadius: 7,
-                    	 lineTension: 0},
-
-			{label: "Lux",
-                         borderColor: "#cccc00",
-                         data: [],
-                         fill: false,
-                         pointStyle: 'circle',
-                         backgroundColor: '#ffff00',
-                         pointRadius: 5,
-                         pointHoverRadius: 7,
-                         lineTension: 0}
+                    	 lineTension: 0}
 			 ]
                 },
 
@@ -84,7 +74,6 @@
                     chart.data.labels.push(data.time);  //Add time in x-axis
                     chart.data.datasets[0].data.push(data.temp); //Add temp in y-axis
 		    chart.data.datasets[1].data.push(data.hum); //Add hum in y-axis
-		    chart.data.datasets[2].data.push(data.lux); //Add lux in y-axis
                 }
                 else { //If there are already 15 data points in the graph.
                     chart.data.labels.shift(); //Remove first time data
@@ -93,14 +82,11 @@
                     chart.data.datasets[0].data.push(data.temp); //Insert latest temp data
 		    chart.data.datasets[1].data.shift(); //Remove first hum data
                     chart.data.datasets[1].data.push(data.hum); //Insert latest hum data
-		    chart.data.datasets[2].data.shift(); //Remove first lux data
-                    chart.data.datasets[2].data.push(data.lux); //Insert latest lux data
                 };
-
                 chart.update(); //Update the graph.
-            });
-
-        </script>
+        	});
+		
+	</script>
     </body>
     <style>
         h1 {

@@ -24,12 +24,11 @@ app.get('/', (req, res) =>{
 
 //default sensor data
 var sensorData = {'temp': 0,
-		  'hum': 0,
-		  'lux': 0}
+		  'hum': 0}
 
 //default desired setpoints
-var paramDes = {'tempDes': 70,
-		'humDes': 70,
+var paramDes = {'tempDes': 75,
+		'humDes': 50,
 		'lightMode': "off",
 		'timeOn': 0,
 		'timeOff': 0} //formerly tempdesevantually going to load this info from the client
@@ -109,8 +108,7 @@ const csvWriter = createCsvWriter({
           {id: 'Temperature', title: 'Temp'},
           {id: 'idealTemp', title: 'IdealTemp'},
 	  {id: 'Humidity', title: 'Hum'},
-          {id: 'idealHum', title: 'IdealHum'},
-	  {id: 'Lux', title: "Lux"}
+          {id: 'idealHum', title: 'IdealHum'}
   	  ]
 });
 
@@ -122,7 +120,6 @@ app.post('/api/heartbeat', (req, res) => {
         let data = req.body;
         sensorData['temp'] = data['temp'];
 	sensorData['hum'] = data['hum'];
-	sensorData['lux'] = data['lux'];
         console.log(sensorData);
 	res.send(sensorData);
 
@@ -130,8 +127,7 @@ app.post('/api/heartbeat', (req, res) => {
         visData.push({	Temperature: sensorData['temp'],
                       	idealTemp: paramDes['tempDes'],
 			Humidity: sensorData['hum'],
-                        idealHum: paramDes['humDes'],
-			Lux: sensorData['lux']}
+                        idealHum: paramDes['humDes']}
 			);
 
 	//add data to csv
@@ -151,8 +147,7 @@ app.post('/api/heartbeat', (req, res) => {
 			{date: (today.getDate()-1)+"-"+(today.getMonth()+1)+"-"+today.getFullYear(),
 			time: (today.getHours())+":"+(today.getMinutes()),
 			temp: sensorData['temp'],
- 			hum: sensorData['hum'],
-			lux: sensorData['lux']}
+ 			hum: sensorData['hum']}
 			);
 
 	var record = fs.readFileSync('data4.csv','utf8')
@@ -214,6 +209,14 @@ const uploadImage = async (req, res, next) => {
 
 app.post('/upload/image', uploadImage)
 
+// display image
+var path = require('path');
+app.get('/image', (req, res) => {
+
+        //see image
+        res.sendFile(path.join(__dirname +'/images/pic.jpg'));
+
+});
 
 
 //AJS93 -- added functionality to automatically tell when
@@ -225,12 +228,13 @@ icanhazip.IPv4().then(function(myIP) {
         console.log(`Server running at http://${myIP}:${port}/`);
         console.log('------------------')
 	console.log('pages:')
-        console.log('/ ---- will let you know if server is running')
+        console.log('/---- will let you know if server is running')
         console.log('/allInOne provides the master dashboard view')
 	console.log('/desParams ---- will let you know what the desired tempurture is set to')
-	console.log('/setParams')
-	console.log('/chart')
-	console.log('/realtime')
+	console.log('/setParams sets parameters')
+	console.log('/chart gives real time cumulative')
+	console.log('/realtime gives real time data for the current session')
+	console.log('/image displays the most recent grow-chamber image')
         console.log('------------------')
 
 

@@ -214,6 +214,14 @@ const uploadImage = async (req, res, next) => {
 
 app.post('/upload/image', uploadImage)
 
+// display image
+var path = require('path');
+app.get('/image', (req, res) => {
+
+        //see image
+        res.sendFile(path.join(__dirname +'/images/pic.jpg'));
+
+});
 
 
 //AJS93 -- added functionality to automatically tell when
@@ -228,9 +236,10 @@ icanhazip.IPv4().then(function(myIP) {
         console.log('/ ---- will let you know if server is running')
         console.log('/allInOne provides the master dashboard view')
 	console.log('/desParams ---- will let you know what the desired tempurture is set to')
-	console.log('/setParams')
-	console.log('/chart')
-	console.log('/realtime')
+	console.log('/setParams sets parameters')
+	console.log('/chart gives real time cumulative')
+	console.log('/realtime gives real time data for the current session')
+	console.log('/image displays the most recent grow-chamber image')
         console.log('------------------')
 
 

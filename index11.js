@@ -163,7 +163,7 @@ const uploadImage = async (req, res, next) => {
 app.post('/upload/image', uploadImage)
 
 
-// convert lastest data to json -> csv -> html-line chart for display
+// display image
 var path = require('path');
 app.get('/image', (req, res) => {
 

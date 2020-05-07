@@ -41,9 +41,17 @@
 
         <form id="form" id="chat_form">
             <input id="chat_input_timeOff" type="number" value="0">
+	</form>
+
+	</br>
+
+	<b>Update Camera Interval</b>
+
+        <form id="form" id="chat_form">
+            <input id="chat_input_cameraInterval" type="number" value="0">
 	    </br>
             </br>
-            <input type="submit" value="Set Climate">
+            <input type="submit" value="Set Variables">
         </form>
 
 	<!--
@@ -95,6 +103,13 @@
                 e.preventDefault();
                 var message = $('#chat_input_timeOff').val();
                 socket.emit('messages5', message);
+                return false;
+        });
+
+	$('form').submit(function(e){
+                e.preventDefault();
+                var message = $('#chat_input_cameraInterval').val();
+                socket.emit('messages6', message);
                 return false;
         });
 
