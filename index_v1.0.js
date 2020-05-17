@@ -203,12 +203,12 @@ app.use('/allInOne', express.static('allInOne.html'));
 // 	- receive
 
 //default desired setpoints
-var paramDes = {'tempDes': 75,
-		'humDes': 50,
-		'lightMode': "off",
-		'timeOn': 0,
-		'timeOff': 0,
-		'cameraInterval': 10} //loads default first, then from the client thereafter
+var paramDes = {'tempDes': 72.5,
+                'humDes': 90,
+                'lightMode': "on",
+                'timeOn': 8,
+                'timeOff': 20,
+                'cameraInterval': 3600} //loads default first, then from the client thereafter
 
 //Page for Setting the desired variables
 app.get('/setParams', function(req, res,next) {
