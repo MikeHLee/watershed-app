@@ -44,6 +44,18 @@ const fs = require('fs');
 //AWS S3 is where we're going to store our files
 const AWS = require('aws-sdk');
 
+// Get AWS S3 Keys
+const ID = 'AKIAJVX5MCS3273BC4RQ';
+const SECRET = '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';
+const BUCKET_NAME_DATA = 'watersheddata';
+const BUCKET_NAME_PHOTOS = 'watershedphotos';
+
+//connect to AWS s3
+const s3 = new AWS.S3({
+    accessKeyId: ID,
+    secretAccessKey: SECRET
+});
+
 //create socket server
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -51,6 +63,7 @@ var io = require('socket.io')(server);
 //import path library 
 //https://nodejs.org/api/path.html
 var path = require('path');
+
 //------------------------------------------------------------------
 
 // - Device Comms --------------------------------------------------
@@ -247,18 +260,6 @@ io.on('connection', function(client) {
 //------------------------------------------------------------------
 
 // - Cloud Comms ---------------------------------------------------
-
-// Get AWS S3 Keys
-const ID = 'AKIAJVX5MCS3273BC4RQ';
-const SECRET = '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';
-const BUCKET_NAME_DATA = 'watersheddata';
-const BUCKET_NAME_PHOTOS = 'watershedphotos';
-
-//connect to AWS s3
-const s3 = new AWS.S3({
-    accessKeyId: ID,
-    secretAccessKey: SECRET
-});
 
 // 	- send
 
