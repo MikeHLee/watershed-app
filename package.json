@@ -16,6 +16,7 @@
     "console-scatter-plot": "^1.0.1",
     "csv": "^5.3.2",
     "csv-append": "^1.0.0",
+    "csv-parser": "^2.3.2",
     "csv-writer": "^1.6.0",
     "express": "^4.17.1",
     "file-system": "^2.2.2",

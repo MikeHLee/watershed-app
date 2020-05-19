@@ -1,6 +1,6 @@
 //------------------------------------------------------------------
 //  Watershed App Main Program
-// 
+//
 // Code is organized into the following sections
 // - App Imports
 // - Device Comms
@@ -41,12 +41,19 @@ app.use(express.static(__dirname + '/node_modules'));
 //filesystem allows us to look at files on the server
 const fs = require('fs');
 
+//keys
+var keys = JSON.parse(fs.readFileSync('/home/ubuntu/config_secret.json', 'utf8'));
+S3_ID = keys.AccessKeyId
+//console.log(S3_ID)
+S3_SECRET = keys.SecretKey
+//console.log(S3_SECRET)
+
 //AWS S3 is where we're going to store our files
 const AWS = require('aws-sdk');
 
 // Get AWS S3 Keys
-const ID = 'AKIAJFV5CGTT5UXUF3KA';
-const SECRET = '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';
+const ID = S3_ID;
+const SECRET = S3_SECRET;
 const BUCKET_NAME_DATA = 'watersheddata';
 const BUCKET_NAME_PHOTOS = 'watershedphotos';
 
@@ -60,7 +67,7 @@ const s3 = new AWS.S3({
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-//import path library 
+//import path library
 //https://nodejs.org/api/path.html
 var path = require('path');
 
@@ -208,7 +215,7 @@ var paramDes = {'tempDes': 72.5,
                 'lightMode': "on",
                 'timeOn': 8,
                 'timeOff': 20,
-                'cameraInterval': 3600} //loads default first, then from the client thereafter
+                'cameraInterval': 60} //loads default first, then from the client thereafter
 
 //Page for Setting the desired variables
 app.get('/setParams', function(req, res,next) {
