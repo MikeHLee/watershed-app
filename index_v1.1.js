@@ -284,7 +284,7 @@ const uploadData = (fileName, key) => {
     // Setting up S3 upload parameters
     const params = {
         Bucket: BUCKET_NAME_DATA,
-        Key: key, // File name you want to save as in S3
+        Key: key.toString() + ".csv", // File name you want to save as in S3
         Body: fileContent
     };
 
@@ -305,7 +305,7 @@ const uploadPic = (fileName, key) => {
     // Setting up S3 upload parameters
     const params = {
         Bucket: BUCKET_NAME_PHOTOS,
-        Key: key, // File name you want to save as in S3
+        Key: key.toString() + ".jpg", // File name you want to save as in S3
         Body: fileContent
     };
 
