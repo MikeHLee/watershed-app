@@ -45,8 +45,8 @@ const fs = require('fs');
 const AWS = require('aws-sdk');
 
 // Get AWS S3 Keys
-const ID = 'AKIAJFV5CGTT5UXUF3KA';
-const SECRET = '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';
+const ID = '';
+const SECRET = '';
 const BUCKET_NAME_DATA = 'watersheddata';
 const BUCKET_NAME_PHOTOS = 'watershedphotos';
 
