@@ -63,9 +63,6 @@ const s3 = new AWS.S3({
     secretAccessKey: SECRET
 });
 
-//spawn subprocesses
-const spawn = require("child_process").spawn;
-
 //create socket server
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -154,8 +151,6 @@ const uploadImage = async (req, res, next) => {
         fs.writeFileSync(path, imageString,  {encoding: 'base64'});
         console.log('new image sent')
 
-	const pythonImageProcess = spawn('python3',["imageprocessor.py"]);
-
 	uploadPic('./images/pic.jpg', new Date().toISOString());
 	console.log('image uploaded to s3')
 
@@ -164,7 +159,6 @@ const uploadImage = async (req, res, next) => {
 
 app.post('/upload/image', uploadImage)
 //------------------------------------------------------------------
-
 
 // - Client Comms --------------------------------------------------
 
