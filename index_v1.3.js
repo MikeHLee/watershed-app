@@ -12,7 +12,7 @@
 // - Cloud Comms
 // 	- send
 // 	- receive
-// - Maintainence/Cleanup
+// - Backend
 //------------------------------------------------------------------
 
 //  TODO:
@@ -104,16 +104,16 @@ app.post('/api/heartbeat', (req, res) => {
 	res.send(sensorData);
 
         //add data for csv
-        visData.push({	Temperature: sensorData['temp'],
-                      	idealTemp: paramDes['tempDes'],
+        visData.push({Temperature: sensorData['temp'],
+                      idealTemp: paramDes['tempDes'],
 			Humidity: sensorData['hum'],
-                        idealHum: paramDes['humDes']}
+                      idealHum: paramDes['humDes']}
 			);
 
 	//add data to csv
-        csvWriter
-                .writeRecords(visData)
-                .then(()=> console.log('The CSV file was written successfully'));
+        //csvWriter
+        //        .writeRecords(visData)
+        //        .then(()=> console.log('The CSV file was written successfully'));
 
 	//clear visData
         visData=[];
@@ -129,14 +129,14 @@ app.post('/api/heartbeat', (req, res) => {
  			hum: sensorData['hum']}
 			);
 
-	var record = fs.readFileSync('data4.csv','utf8');
+	//var record = fs.readFileSync('data4.csv','utf8');
 	//console.log(record);
 
-	uploadData('data4.csv', startDateTime);
-	console.log('data uploaded to s3')
+	//uploadData('data4.csv', startDateTime);
+	//console.log('data uploaded to s3')
 
 	//emit websockets event for cumulative graph
-	io.sockets.emit('cumulativeData', {cumulative: record});
+	//io.sockets.emit('cumulativeData', {cumulative: record});
 	});
 
 // Receive image from device
@@ -190,17 +190,16 @@ app.get('/desParams', (req, res)=>{
 app.use('/realtime', express.static('displayrealtime6.html'));
 
 // convert lastest data to json -> csv -> html-line chart for display, set to display chart
-app.get('/chart', (req, res) => {
-        console.log('user viewing chart');
+// app.get('/chart', (req, res) => {
+//        console.log('user viewing chart');
         //convert csv to html
         //https://www.npmjs.com/package/chart-csv
         //using shell commands
         //https://stackabuse.com/executing-shell-commands-with-node-js/;
 
-        //visualize data
-        res.sendFile(path.join(__dirname +'/data4.html'));
-
-});
+//        //visualize data
+//        res.sendFile(path.join(__dirname +'/data4.html'));
+//});
 
 // display image
 app.get('/image', (req, res) => {
@@ -326,17 +325,17 @@ const uploadPic = (fileName, key) => {
 // for using shell commands, see
 const { exec } = require("child_process");
 
-//this is for saving the data
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const csvWriter = createCsvWriter({
-  path: 'data4.csv',
-  header: [
-          {id: 'Temperature', title: 'Temp'},
-          {id: 'idealTemp', title: 'IdealTemp'},
-	  {id: 'Humidity', title: 'Hum'},
-          {id: 'idealHum', title: 'IdealHum'}
-  	  ]
-});
+//this is for saving data to .CSV
+//const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+//const csvWriter = createCsvWriter({
+//  path: 'data4.csv',
+//  header: [
+//          {id: 'Temperature', title: 'Temp'},
+//          {id: 'idealTemp', title: 'IdealTemp'},
+//	    {id: 'Humidity', title: 'Hum'},
+//          {id: 'idealHum', title: 'IdealHum'}
+//  	  ]
+//});
 
 //AJS93 -- added functionality to automatically tell when
 //install: npm install canihazip

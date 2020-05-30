@@ -63,6 +63,9 @@ const s3 = new AWS.S3({
     secretAccessKey: SECRET
 });
 
+//spawn subprocesses
+const spawn = require("child_process").spawn;
+
 //create socket server
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -129,8 +132,8 @@ app.post('/api/heartbeat', (req, res) => {
 	var record = fs.readFileSync('data4.csv','utf8');
 	//console.log(record);
 
-	uploadData('data4.csv', startDateTime);
-	console.log('data uploaded to s3')
+	//uploadData('data4.csv', startDateTime);
+	//console.log('data uploaded to s3')
 
 	//emit websockets event for cumulative graph
 	io.sockets.emit('cumulativeData', {cumulative: record});
@@ -151,6 +154,8 @@ const uploadImage = async (req, res, next) => {
         fs.writeFileSync(path, imageString,  {encoding: 'base64'});
         console.log('new image sent')
 
+	const pythonImageProcess = spawn('python3',["imageprocessor.py"]);
+
 	uploadPic('./images/pic.jpg', new Date().toISOString());
 	console.log('image uploaded to s3')
 
@@ -159,6 +164,7 @@ const uploadImage = async (req, res, next) => {
 
 app.post('/upload/image', uploadImage)
 //------------------------------------------------------------------
+
 
 // - Client Comms --------------------------------------------------
 
@@ -181,7 +187,7 @@ app.get('/desParams', (req, res)=>{
 });
 
 //this page shows real time data of the last 15 data received (to be extended)
-app.use('/realtime', express.static('displayrealtime5.html'));
+app.use('/realtime', express.static('displayrealtime6.html'));
 
 // convert lastest data to json -> csv -> html-line chart for display, set to display chart
 app.get('/chart', (req, res) => {
@@ -278,7 +284,7 @@ const uploadData = (fileName, key) => {
     // Setting up S3 upload parameters
     const params = {
         Bucket: BUCKET_NAME_DATA,
-        Key: key, // File name you want to save as in S3
+        Key: key.toString() + ".csv", // File name you want to save as in S3
         Body: fileContent
     };
 
@@ -299,7 +305,7 @@ const uploadPic = (fileName, key) => {
     // Setting up S3 upload parameters
     const params = {
         Bucket: BUCKET_NAME_PHOTOS,
-        Key: key, // File name you want to save as in S3
+        Key: key.toString() + ".jpg", // File name you want to save as in S3
         Body: fileContent
     };
 
